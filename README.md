@@ -3,9 +3,9 @@ Demo repo for [my Hipster Java Web development post](https://leomrlima.wordpress
 
 # Technologies we <3
 
-- (Eclipse JNoSQL)[http://jnosql.org]
-- (Vaadin)[http://vaadin.com]
-- (Eclipse Microprofile)[http://microprofile.io]
+- [Eclipse JNoSQL](http://jnosql.org)
+- [Vaadin](http://vaadin.com)
+- [Eclipse Microprofile](http://microprofile.io)
 - CDI
 - Maven
 - Java :D
