@@ -1,22 +1,33 @@
 package leomrlima.languages;
 
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
+
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.jnosql.artemis.document.DocumentTemplate;
 
 @ApplicationScoped
 public class LanguageDB {
-
-  private Set<Language> languages = new LinkedHashSet<>();
-
+  
+  @Inject
+  private DocumentTemplate template;
+  
   public boolean addLanguage(Language language) {
-    return this.languages.add(Objects.requireNonNull(language, "language can't be null"));
+    return template.insert(language) != null;
   }
   
   public Collection<Language> getAllLanguages() {
-    return Collections.unmodifiableSet(languages);
+    return template.select(select().from("Language").build());
+  }
+  
+  public int countAllLanguages() {
+    //FIXME: change then JNoSQL supports count!
+    return getAllLanguages().size();
+  }
+  
+  public List<Language> fetchLanguages(int offset, int limit) {
+    return template.select(select().from("Language").start(offset).limit(limit).build());
   }
 }
