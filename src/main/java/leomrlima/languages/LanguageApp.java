@@ -4,6 +4,7 @@ import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.cdi.CDIUI;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -14,6 +15,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalSplitPanel;
+import java.util.List;
 import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,13 @@ public class LanguageApp extends UI {
     Grid<Language> grid = new Grid<>();
     grid.setSizeFull();
 
-    grid.setItems(languageDB.getAllLanguages());
+    //from https://github.com/vaadin/framework/blob/master/documentation/datamodel/datamodel-providers.asciidoc#lazy-loading-data-to-a-listing
+    grid.setDataProvider(DataProvider.fromCallbacks(  // First callback fetches items based on a query
+        query -> languageDB.fetchLanguages(query.getOffset(), query.getLimit()).stream(),
+        // Second callback fetches the number of items for a query
+        query -> languageDB.countAllLanguages()
+        ));
+    
     grid.setSelectionMode(SelectionMode.NONE);
 
     grid.addColumn(Language::getName).setCaption("Name");
