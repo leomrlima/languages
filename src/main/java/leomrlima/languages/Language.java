@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.jnosql.artemis.Column;
+import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Id;
 
+@Entity
 public class Language {
 
+  @Id
   private String name;
+  
+  @Column
   private String link;
+  
   private List<Comment> comments = new ArrayList<>();
 
   public String getName() {
