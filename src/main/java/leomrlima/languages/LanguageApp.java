@@ -15,7 +15,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalSplitPanel;
-import java.util.List;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import org.slf4j.LoggerFactory;
 
@@ -28,17 +28,22 @@ public class LanguageApp extends UI {
 
   @Inject
   private LanguageDB languageDB;
-
+  
+  private Grid<Language> secondComponent;
+  
+  @Inject
+  private javax.enterprise.event.Event<NewLanguageAddedEvent> newLanguageAddedEvent;
+  
   @Override
   protected void init(VaadinRequest request) {
     VerticalSplitPanel sample = new VerticalSplitPanel();
     sample.setSizeFull();
     sample.setSplitPosition(250, Unit.PIXELS);
 
-    Grid<Language> secondComponent = createDataGrid();
+    secondComponent = createDataGrid();
     secondComponent.setWidth(100, Unit.PERCENTAGE);
 
-    Component firstComponent = createLanguageForm(secondComponent);
+    Component firstComponent = createLanguageForm();
     firstComponent.setWidth(100, Unit.PERCENTAGE);
 
     sample.setFirstComponent(firstComponent);
@@ -65,8 +70,13 @@ public class LanguageApp extends UI {
 
     return grid;
   }
+  
+  private void updateGrid(@Observes NewLanguageAddedEvent event) {
+    Notification.show("Language added!");
+    secondComponent.getDataProvider().refreshAll();
+  }
 
-  private Component createLanguageForm(Grid<Language> gridToUpdate) {
+  private Component createLanguageForm() {
     FormLayout sample = new FormLayout();
     sample.setMargin(true);
     sample.addStyleName("outlined");
@@ -79,6 +89,9 @@ public class LanguageApp extends UI {
     final TextField link = new TextField("Link");
     link.setWidth(100.0f, Unit.PERCENTAGE);
     sample.addComponent(link);
+    
+    Button b = new Button();
+    
 
     sample.addComponent(new Button("Add", __ -> {
       LoggerFactory.getLogger(getClass()).info("Adding new language!");
@@ -86,8 +99,7 @@ public class LanguageApp extends UI {
       language.setLink(link.getValue());
       language.setName(name.getValue());
       if (languageDB.addLanguage(language)) {
-        Notification.show("Language added!");
-        gridToUpdate.getDataProvider().refreshAll();
+        newLanguageAddedEvent.fire(new NewLanguageAddedEvent());
       } else {
         Notification.show("Count not add language!", Notification.Type.WARNING_MESSAGE);
       }
