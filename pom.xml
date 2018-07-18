@@ -11,6 +11,7 @@
 	<properties>
 		<version.wildfly-swarm>2018.5.0</version.wildfly-swarm>
 		<maven.min.version>3.5.0</maven.min.version>
+		<java.version>10</java.version>
 		<maven.compiler.target>1.10</maven.compiler.target>
 		<maven.compiler.source>1.10</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,6 +74,16 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.7.0</version>
+					<configuration>
+						<release>${java.version}</release>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.ow2.asm</groupId>
+							<artifactId>asm</artifactId>
+							<version>6.1.1</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<artifactId>maven-failsafe-plugin</artifactId>
