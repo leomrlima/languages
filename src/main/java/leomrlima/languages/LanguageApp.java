@@ -36,6 +36,8 @@ public class LanguageApp extends UI {
   
   @Override
   protected void init(VaadinRequest request) {
+	  LoggerFactory.getLogger(getClass()).info("Running {} from {} at {}",
+			  System.getProperty("java.version"), System.getProperty("java.vendor"), System.getProperty("java.home"));
     VerticalSplitPanel sample = new VerticalSplitPanel();
     sample.setSizeFull();
     sample.setSplitPosition(250, Unit.PIXELS);
